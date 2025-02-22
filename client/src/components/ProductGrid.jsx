@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const url = "http://localhost:1337/api/products?populate=*";
 
@@ -43,12 +44,9 @@ const ProductGrid = () => {
 
   return (
     <>
-      <section
-        id="Projects"
-        className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
-      >
+      <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
         {products.map((product) => {
-          const { id, title, description, price, image } = product;
+          const { documentId, title, description, price, image } = product;
 
           const imageUrl =
             image && image.length > 0
@@ -57,10 +55,13 @@ const ProductGrid = () => {
 
           return (
             <div
-              key={id}
+              key={documentId}
               className="mt-9 w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl"
             >
-              <a href="#" className="cursor-default">
+              <Link
+                to={`/product/${product.documentId}`}
+                className="cursor-default"
+              >
                 <img
                   src={imageUrl}
                   alt={title}
@@ -95,7 +96,7 @@ const ProductGrid = () => {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </div>
           );
         })}
