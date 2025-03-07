@@ -31,12 +31,14 @@ export const CartProvider = ({ children }) => {
   const addToCart = (product, quantity = 1) => {
     setCart((prevCart) => {
       // Check if product already exists in cart
-      const existingItem = prevCart.find((item) => item.id === product.id);
+      const existingItem = prevCart.find(
+        (item) => item.documentId === product.documentId
+      );
 
       if (existingItem) {
         // Update quantity if product exists
         return prevCart.map((item) =>
-          item.id === product.id
+          item.documentId === product.documentId
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -49,7 +51,9 @@ export const CartProvider = ({ children }) => {
 
   // Remove item from cart
   const removeFromCart = (productId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    setCart((prevCart) =>
+      prevCart.filter((item) => item.documentId !== productId)
+    );
   };
 
   // Update item quantity
@@ -61,7 +65,7 @@ export const CartProvider = ({ children }) => {
 
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
+        item.documentId === productId ? { ...item, quantity } : item
       )
     );
   };
