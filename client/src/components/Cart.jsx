@@ -1,26 +1,7 @@
 import { motion } from "framer-motion";
 import { Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { useCart } from "../context/CartContext";
-
-// Helper function for image URLs
-const getImageUrl = (product, size = "thumbnail") => {
-  if (!product || !product.image || !product.image.length) {
-    return "https://via.placeholder.com/100";
-  }
-
-  const image = product.image[0];
-
-  if (size === "full") {
-    return `http://localhost:1337${image.url}`;
-  }
-
-  if (image.formats && image.formats[size]) {
-    return `http://localhost:1337${image.formats[size].url}`;
-  }
-
-  // Fallback to full size
-  return `http://localhost:1337${image.url}`;
-};
+import { getImageUrl } from "../utils/imageHelpers";
 
 const Cart = () => {
   const {
