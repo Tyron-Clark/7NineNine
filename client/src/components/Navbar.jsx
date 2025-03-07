@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { Menu, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { toggleCart, cartItemCount } = useCart();
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
@@ -29,9 +31,20 @@ const Navbar = () => {
         <div className="text-2xl font-bold text-gray-800">Logo</div>
 
         <div className="flex items-center space-x-4">
-          <a href="#cart" className="text-gray-800 hover:text-gray-600">
+          {/* Use the cart button directly in Navbar */}
+          <button
+            onClick={toggleCart}
+            className="relative text-gray-800 hover:text-gray-600 focus:outline-none"
+            aria-label="Open cart"
+          >
             <ShoppingCart className="w-6 h-6" />
-          </a>
+            {cartItemCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {cartItemCount}
+              </span>
+            )}
+          </button>
+
           <button
             className="md:hidden focus:outline-none"
             onClick={toggleMenu}
@@ -49,20 +62,22 @@ const Navbar = () => {
       >
         <ul className="flex flex-col p-4">
           <li>
-            <a
-              href="#home"
+            <Link
+              to="/"
               className="block py-2 text-gray-800 hover:text-gray-600"
+              onClick={toggleMenu}
             >
               Home
-            </a>
+            </Link>
           </li>
           <li>
-            <a
-              href="#about"
+            <Link
+              to="/about"
               className="block py-2 text-gray-800 hover:text-gray-600"
+              onClick={toggleMenu}
             >
               About
-            </a>
+            </Link>
           </li>
         </ul>
       </motion.div>

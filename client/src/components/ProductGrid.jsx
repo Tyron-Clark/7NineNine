@@ -1,6 +1,9 @@
 import axios from "axios";
+import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { getImageUrl } from "../utils/imageHelpers";
 
 const url = "http://localhost:1337/api/products?populate=*";
 
@@ -8,6 +11,7 @@ const ProductGrid = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,6 +29,12 @@ const ProductGrid = () => {
 
     fetchProducts();
   }, []);
+
+  const handleAddToCart = (e, product) => {
+    e.preventDefault(); // Prevent navigation to product detail
+    e.stopPropagation(); // Stop event bubbling
+    addToCart(product, 1);
+  };
 
   if (isLoading) {
     return (
@@ -46,12 +56,7 @@ const ProductGrid = () => {
     <>
       <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
         {products.map((product) => {
-          const { documentId, title, description, price, image } = product;
-
-          const imageUrl =
-            image && image.length > 0
-              ? `http://localhost:1337${image[0].formats.small.url}`
-              : "https://via.placeholder.com/375x500";
+          const { documentId, title, description, price } = product;
 
           return (
             <div
@@ -59,13 +64,13 @@ const ProductGrid = () => {
               className="mt-9 w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl"
             >
               <Link
-                to={`/product/${product.documentId}`}
-                className="cursor-default"
+                to={`/products/${documentId}?populate=*`}
+                className="block h-full cursor-pointer"
               >
                 <img
-                  src={imageUrl}
+                  src={getImageUrl(product, "small")}
                   alt={title}
-                  className="h-80 w-72 object-cover rounded-t-xl cursor-pointer"
+                  className="h-80 w-72 object-cover rounded-t-xl"
                 />
                 <div className="px-4 py-3 w-72">
                   <p className="text-lg font-bold text-black truncate block capitalize">
@@ -79,20 +84,13 @@ const ProductGrid = () => {
                       ${price}
                     </p>
                     <div className="ml-auto">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                        className="bi bi-bag-plus cursor-pointer"
-                        viewBox="0 0 16 16"
+                      <button
+                        onClick={(e) => handleAddToCart(e, product)}
+                        className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition"
+                        aria-label="Add to cart"
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"
-                        />
-                        <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z" />
-                      </svg>
+                        <ShoppingCart className="h-5 w-5 text-blue-600" />
+                      </button>
                     </div>
                   </div>
                 </div>

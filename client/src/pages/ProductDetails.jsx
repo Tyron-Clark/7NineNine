@@ -1,19 +1,23 @@
 import axios from "axios";
+import { ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { getImageUrl } from "../utils/imageHelpers";
 
-const ProductDetails = () => {
-  const { id } = useParams();
+const ProductDetail = () => {
+  const { documentId } = useParams();
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setIsLoading(true);
         const response = await axios.get(
-          `http://localhost:1337/api/products/${id}?populate=*`
+          `http://localhost:1337/api/products/${documentId}?populate=*`
         );
         setProduct(response.data.data);
       } catch (err) {
@@ -24,8 +28,14 @@ const ProductDetails = () => {
       }
     };
 
-    fetchProduct();
-  }, [id]);
+    if (documentId) {
+      fetchProduct();
+    }
+  }, [documentId]);
+
+  const handleAddToCart = () => {
+    addToCart(product, 1);
+  };
 
   if (isLoading) {
     return (
@@ -44,41 +54,36 @@ const ProductDetails = () => {
   }
 
   if (!product) {
-    return <p className="text-center">Product not found</p>;
+    return <div className="text-center p-4">Product not found</div>;
   }
 
-  const { title, description, price, image } = product;
-
-  const imageUrl =
-    image && image.length > 0
-      ? `http://localhost:1337${image[0].url}`
-      : "https://via.placeholder.com/375x500";
+  const { title, description, price } = product;
 
   return (
-    <div className="w-full max-w-5xl mx-auto mt-10 p-4">
-      <h1 className="text-4xl font-bold my-8">{title}</h1>
+    <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row gap-8">
-        <div className="w-full md:w-1/2">
+        <div className="md:w-1/2">
           <img
-            src={imageUrl}
+            src={getImageUrl(product, "full")}
             alt={title}
-            className="w-full h-auto object-cover rounded-lg shadow-lg"
+            className="w-full h-auto object-cover rounded-lg shadow-md"
           />
         </div>
-        <div className="w-full md:w-1/2 flex flex-col justify-between">
-          <div>
-            <p className="text-gray-600">{description}</p>
-          </div>
-          <div>
-            <p className="text-3xl font-semibold text-black mb-4">${price}</p>
-            <button className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition ease-in-out duration-300">
-              Add to Cart
-            </button>
-          </div>
+        <div className="md:w-1/2">
+          <h1 className="text-3xl font-bold mb-4">{title}</h1>
+          <p className="text-gray-600 mb-6">{description}</p>
+          <div className="text-2xl font-semibold mb-6">${price}</div>
+          <button
+            onClick={handleAddToCart}
+            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export default ProductDetails;
+export default ProductDetail;
