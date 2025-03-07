@@ -27,7 +27,10 @@ export default ({ env }) => ({
   // CORS configuration for allowing frontend access
   cors: {
     enabled: true,
-    origin: env.array("CORS_ORIGIN", ["http://localhost:5173"]),
+    origin: env.array("CORS_ORIGIN", [
+      "http://localhost:5173",
+      "https://7-nine-nine.vercel.app/",
+    ]),
     credentials: true,
   },
   // Middleware configuration
