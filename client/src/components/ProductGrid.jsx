@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { getImageUrl } from "../utils/imageHelpers";
 
-const url = "http://localhost:1337/api/products?populate=*";
+const apiUrl = import.meta.env.VITE_API_URL;
+const url = `${apiUrl}/api/products?populate=*`;
 
 const ProductGrid = () => {
   const [products, setProducts] = useState([]);

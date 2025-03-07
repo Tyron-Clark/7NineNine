@@ -1,10 +1,4 @@
 /**
- * Helper function to get the correct image URL from a product
- *
- * This function handles various edge cases like missing images
- * or missing image formats, and generates the full URL by
- * prepending the API base URL.
- *
  * @param {Object} product - The product object from the API
  * @param {string} size - The desired image size ('thumbnail', 'small', 'full')
  * @returns {string} - The complete image URL
@@ -23,7 +17,7 @@ export const getImageUrl = (product, size = "thumbnail") => {
   }
 
   const image = product.image[0];
-  const baseUrl = "http://localhost:1337";
+  const baseUrl = import.meta.env.VITE_API_URL;
 
   // Return full-size image if requested
   if (size === "full") {

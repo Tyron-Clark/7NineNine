@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { getImageUrl } from "../utils/imageHelpers";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const ProductDetail = () => {
   const { documentId } = useParams();
   const [product, setProduct] = useState(null);
@@ -17,7 +19,7 @@ const ProductDetail = () => {
       try {
         setIsLoading(true);
         const response = await axios.get(
-          `http://localhost:1337/api/products/${documentId}?populate=*`
+          `${apiUrl}/api/products/${documentId}?populate=*`
         );
         setProduct(response.data.data);
       } catch (err) {
